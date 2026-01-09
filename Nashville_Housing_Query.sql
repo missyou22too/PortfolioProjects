@@ -3,6 +3,9 @@
 
 Nashville Housing Data Cleaning Project in SQL
 
+Skills used: Joins, case statements, CTE's, feature creation
+
+
 */
 USE PortfolioProjects
 --view data
@@ -156,4 +159,5 @@ SELECT *
 From PortfolioProjects.dbo.NashvilleHousing
 
 ALTER TABLE PortfolioProjects.dbo.NashvilleHousing
+
 DROP COLUMN OwnerAddress, TaxDistrict, PropertyAddress
