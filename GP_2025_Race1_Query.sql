@@ -22,6 +22,7 @@ FROM GP_2025_Race1;
 SELECT *
 INTO GP_2025_Race1_copy
 FROM GP_2025_Race1;
+GO --batch separator tells SQL to execute before continuing
 
 SELECT *
 FROM GP_2025_Race1_copy;
@@ -59,6 +60,7 @@ HAVING COUNT(*) > 1;
 
 ALTER TABLE GP_2025_Race1_copy
 ADD record_Duration FLOAT;
+GO
 
 -- 11.57406 is our time constant
 SELECT UTC,
@@ -88,6 +90,7 @@ ON t.UTC = ti.UTC;
 ALTER TABLE GP_2025_Race1_copy
 ADD actual_Distance FLOAT, 
 SOG_Distance FLOAT;
+GO
 
 SELECT BSP, SOG,
 record_Duration,
@@ -103,6 +106,7 @@ SET actual_Distance = BSP * record_Duration * 1.6878,
 
 ALTER TABLE GP_2025_Race1_copy
 ADD UTC_DateTime DATETIME;
+GO
 
 SELECT UTC, UTC_DateTime,
 DATEADD(SECOND, UTC * 86400, '1899-12-31') as newdatetime
@@ -120,6 +124,7 @@ FROM GP_2025_Race1_copy;
 
 ALTER TABLE GP_2025_Race1_copy
 ADD UTC_Date DATE, UTC_Time TIME;
+GO
 
 UPDATE GP_2025_Race1_copy
 SET UTC_Date = CAST(UTC_DateTime AS DATE),
@@ -129,6 +134,7 @@ SET UTC_Date = CAST(UTC_DateTime AS DATE),
 
 ALTER TABLE GP_2025_Race1_copy
 DROP COLUMN UTC_DateTime;
+GO
 
 --identify and treat any missing lat/lon values
 
@@ -154,6 +160,7 @@ ADD twa_multiplier FLOAT,
 	VMG_BSP_dist FLOAT,
 	VMG_targ_dist FLOAT,
 	VMG_polar_dist FLOAT;
+GO
 
 UPDATE GP_2025_Race1_copy
 SET polar_Distance = PolBsp * record_Duration * 1.6878,
@@ -188,8 +195,9 @@ SET VMG_targ_dist = VMG_targ * record_Duration * 1.6878,
 ---------------------------- CALC PORT AND STARBOARD, UPDN ----------------------------
 
 ALTER TABLE GP_2025_Race1_copy
-ADD PS VARCHAR(50)
-ADD UpDn VARCHAR(50);
+ADD PS VARCHAR(50),
+	UpDn VARCHAR(50);
+GO
 
 UPDATE GP_2025_Race1_copy
 SET PS = CASE WHEN TWA >= 0 THEN 'S' ELSE 'P' END,
@@ -201,6 +209,7 @@ SET PS = CASE WHEN TWA >= 0 THEN 'S' ELSE 'P' END,
 
 ALTER TABLE GP_2025_Race1_copy
 ADD angle_loss_distance FLOAT;
+GO
 
 WITH temp_angle AS (
 SELECT UTC,
@@ -227,6 +236,7 @@ ADD angle_time_loss FLOAT,
 	speed_distance_lost_polar FLOAT,
 	speed_time_lost_target FLOAT,
 	speed_time_lost_polar FLOAT;
+GO
 
 UPDATE GP_2025_Race1_copy
 SET angle_time_loss = angle_loss_distance / actual_Distance,
